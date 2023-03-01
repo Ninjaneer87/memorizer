@@ -56,3 +56,22 @@
     opacity: 1;
   }
 }
+
+.spin {
+  animation: spin 10s linear infinite;
+  -webkit-animation: spin 10s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  30% {
+    transform: rotate(120deg) scale(1.3)
+  }
+  70% {
+    transform: rotate(240deg) scale(.9)
+  }
+  100% {
+    transform: rotate(360deg) scale(1)
+  }
+}
