@@ -1,0 +1,80 @@
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: "Nova Square", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira S ans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: auto;
+  overflow-y: overlay;
+  overflow-x: hidden;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+input {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+ul, ol, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+p,
+ul,
+ol,
+li,
+section,
+main,
+header,
+nav,
+footer,
+button,
+::after,
+::before,
+a {
+  font-family: "Nova Square", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira S ans", "Droid Sans", "Helvetica Neue", sans-serif;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent !important;
+}
+button {
+  outline: none;
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: 250ms border-color;
+
+  &:focus-visible {
+    border-color: white;
+  }
+}

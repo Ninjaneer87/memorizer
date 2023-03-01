@@ -1,0 +1,21 @@
+@use "styles/global/_index.scss" as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Nova+Square:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+
+@layer base {
+  body {
+    @include colors;
+  }
+}
+
+@layer components {
+  .gradient {
+    @apply bg-gradient-to-r from-primary to-secondary;
+  }
+}

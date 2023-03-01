@@ -1,0 +1,31 @@
+.gradient-wrapper {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    position: fixed;
+    width: 200px;
+    height: 300px;
+    border-radius: 10%;
+    filter: blur(50px);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  &::before {
+    top: 20%;
+    left: 20%;
+    background: var(--color-primary);
+    animation: spin 9s linear infinite;
+    -webkit-animation: spin 9s linear infinite;
+  }
+  &::after {
+    bottom: 20%;
+    right: 20%;
+    background: var(--color-secondary);
+    animation: spin 9s linear infinite;
+    -webkit-animation: spin 9s linear infinite;
+    animation-delay: 1500ms;
+  }
+}

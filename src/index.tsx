@@ -1,15 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import 'styles/index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { PlayerContextProvider } from 'context/playerContext';
+import { GameContextProvider } from 'context/gameContext';
+import { CardContextProvider } from 'context/cardContext';
+import { ScoreContextProvider } from 'context/scoreContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <CardContextProvider>
+      <PlayerContextProvider>
+        <ScoreContextProvider>
+          <GameContextProvider>
+            <App />
+          </GameContextProvider>
+        </ScoreContextProvider>
+      </PlayerContextProvider>
+    </CardContextProvider>
   </React.StrictMode>
 );
 

@@ -1,25 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from "react";
+import Layout from "components/shared/Layout/Layout";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { usePlayerContext } from "context/playerContext";
+import ProtectedRoutes from "components/shared/utility/ProtectedRoutes";
+
+const Home = React.lazy(() => import("pages/Home"));
+const Game = React.lazy(() => import("pages/Game"));
+const Scores = React.lazy(() => import("components/features/Game/Scores"));
 
 function App() {
+  const { player, playerLoaded } = usePlayerContext();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <BrowserRouter>
+        <Routes>
+          {/* Not authenticated ONLY*/}
+          <Route element={<ProtectedRoutes denied={!!player && playerLoaded} redirectTo='/game' />} >
+            {/* Home */}
+            <Route
+              path='/'
+              element={
+                <Suspense>
+                  <Home />
+                </Suspense>
+              }
+            />
+          </Route>
+
+          {/* Authenticated ONLY*/}
+          <Route element={<ProtectedRoutes denied={!player && playerLoaded} redirectTo='/' />} >
+            {/* Game */}
+            <Route
+              path='game'
+              element={
+                <Suspense>
+                  <Game />
+                </Suspense>
+              }
+            >
+              {/* Scores */}
+              <Route
+                path="scores"
+                element={
+                  <Suspense>
+                    <Scores />
+                  </Suspense>
+                }
+              />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Layout>
   );
 }
 
