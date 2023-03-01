@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { StorageKeys } from "utils/constants";
+import { STORAGE_KEYS } from "utils/constants";
 import { useStorage } from "./useStorage";
 
 export type Score = {
@@ -10,9 +10,9 @@ export type Score = {
 const initialScores = [] as Score[];
 
 export function useScores() {
-  const [scores, setScores] = useStorage(StorageKeys.SCORES, initialScores);
+  const [scores, setScores] = useStorage(STORAGE_KEYS.SCORES, initialScores);
 
-  const addScore = useCallback(
+  const saveScore = useCallback(
     (player: string, time: number) => {
       const newScore = { player, time };
       setScores((prevScores) => {
@@ -38,6 +38,6 @@ export function useScores() {
 
   return {
     scores,
-    addScore,
+    saveScore,
   };
 }

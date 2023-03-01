@@ -4,7 +4,7 @@ import {
   FALLBACK_IMAGES,
   NUMBER_OF_PAIRS,
   PEXEL_API_KEY,
-  StorageKeys,
+  STORAGE_KEYS,
 } from "utils/constants";
 import { useStorage } from "./useStorage";
 import { Photo } from "pexels/dist/types";
@@ -17,11 +17,8 @@ const initialImages = [] as string[];
 const initialCards = [] as CardType[];
 
 export function usePexelImages() {
-  const [images, setImages, loaded] = useStorage(
-    StorageKeys.IMAGES,
-    initialImages
-  );
-  const [cards, setCards] = useStorage(StorageKeys.CARDS, initialCards);
+  const [images, setImages, loaded] = useStorage(STORAGE_KEYS.IMAGES, initialImages);
+  const [cards, setCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -58,5 +55,5 @@ export function usePexelImages() {
     }
   }, [loaded, setImages, setCards]);
 
-  return { images, cards, error, loading, setCards, newImages: fetchImages, clearImages };
+  return { images, cards, error, loading, setCards, getNewImages: fetchImages, clearImages };
 }

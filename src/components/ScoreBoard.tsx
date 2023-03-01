@@ -1,4 +1,4 @@
-import ClientOnlyPortal from "components/shared/utility/ClientOnlyPortal";
+import ClientOnlyPortal from "components/ClientOnlyPortal";
 import { useGameContext } from "context/gameContext";
 import { useScoreContext } from "context/scoreContext";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { formatTime } from "utils/utility";
 import { usePlayerContext } from "context/playerContext";
 
-const Scores = () => {
+const ScoreBoard = () => {
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
   const { pause, start, isGameOver } = useGameContext();
@@ -35,7 +35,7 @@ const Scores = () => {
       <div
         onClick={handleClose}
         style={{animationDuration: '150ms'}}
-        className={`p-4 blur-in fixed inset-0 bg-black/50 backdrop-blur-lg grid place-items-center ${closing ? 'blur-out' : ''}`}
+        className={`p-4 blur-in fixed inset-0 bg-black/50 backdrop-blur-lg flex justify-center items-center ${closing ? 'blur-out' : ''}`}
       >
         <div
           onClick={e => e.stopPropagation()}
@@ -71,4 +71,4 @@ const Scores = () => {
   );
 };
 
-export default Scores;
+export default ScoreBoard;

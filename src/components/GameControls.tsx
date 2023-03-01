@@ -23,13 +23,13 @@ const GameControls = () => {
     setPlayer('');
   }
 
-  const handleScores = () => {
+  const handleScoreBoard = () => {
     navigate('scores');
   }
 
   return (
-    <div className='flex flex-wrap gap-4 items-start justify-between max-sm:items-center max-sm:flex-col'>
-      <div className='flex flex-wrap gap-2 flex-col'>
+    <div className='blur-in flex flex-wrap gap-4 items-start justify-between max-sm:items-center max-sm:flex-col'>
+      <div className='flex flex-wrap gap-2 flex-col  bg-black/50 p-2 px-3 rounded-xl'>
         <div className='max-w-[200px] truncate' title={player}>
           <FontAwesomeIcon icon={regular('user')} className='text-primary' /> <strong>{player}</strong>
         </div>
@@ -38,12 +38,12 @@ const GameControls = () => {
         </div>
       </div>
 
-      <div className='flex flex-wrap gap-4'>
+      <div className='flex flex-wrap gap-1  bg-black/50 p-2 rounded-xl'>
         <button onClick={newGame} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
           <FontAwesomeIcon className='text-xl' icon={solid('repeat')} />
           <span className='text-xs'>New game</span>
         </button>
-        <button onClick={handleScores} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
+        <button onClick={handleScoreBoard} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
           <FontAwesomeIcon className='text-xl' icon={solid('ranking-star')} />
           <span className='text-xs'>Score board</span>
         </button>

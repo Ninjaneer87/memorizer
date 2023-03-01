@@ -6,10 +6,10 @@ const CardContext = createContext({});
 
 type CardContextType = {
   cards: CardType[];
-  newCards: () => void;
+  createNewCards: () => void;
   clearImages: () => void;
   flipCard: (id: number) => void;
-  pairedCount: number;
+  matchedCardsCount: number;
   loadingImages: boolean;
 };
 
@@ -18,14 +18,14 @@ type Props = {
 };
 
 export const CardContextProvider = ({ children }: Props) => {
-  const { cards, newCards, flipCard, pairedCount, clearImages, loadingImages } = useCards();
+  const { cards, createNewCards, flipCard, matchedCardsCount, clearImages, loadingImages } = useCards();
 
 
   const context: CardContextType = {
     cards,
-    newCards,
+    createNewCards,
     flipCard,
-    pairedCount,
+    matchedCardsCount,
     clearImages,
     loadingImages
   }

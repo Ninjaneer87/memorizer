@@ -14,6 +14,7 @@ export function useStorage<T>(key: string, initialValue: T) {
     const storageValue = localStorage.getItem(key);
     const storedValue = storageValue ? JSON.parse(storageValue) : initialValue;
     const newValue = value instanceof Function ? value(storedValue) : value;
+    
     setStoredValue(newValue);
     localStorage.setItem(key, JSON.stringify(newValue));
   }, [key, initialValue]);

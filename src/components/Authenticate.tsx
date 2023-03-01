@@ -36,9 +36,9 @@ const Authenticate = () => {
             type="text"
             ref={inputRef}
             placeholder='MegaByte, SuperMem...'
-            className='block rounded-lg w-full p-4 border border-solid border-primary bg-transparent placeholder:text-placeholder focus-within:border-secondary hover:border-secondary transition-all'
+            className='block rounded-xl w-full p-4 border border-solid border-primary bg-transparent placeholder:text-placeholder focus-within:border-secondary hover:border-secondary transition-all'
           />
-          <button className='rounded-lg bg-secondary w-full mt-4 p-4 uppercase'>
+          <button className='rounded-xl bg-secondary w-full mt-4 p-4 uppercase'>
             Start the game <FontAwesomeIcon icon={faCoffee} />
           </button>
         </form>

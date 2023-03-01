@@ -1,4 +1,4 @@
-import Authenticate from "components/features/Home/Authenticate";
+import Authenticate from "components/Authenticate";
 
 const Home = () => {
   return (

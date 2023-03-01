@@ -18,7 +18,7 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
     <button
       style={{ animationDelay: `${animationDelay}ms` }}
       className={`
-        blur-in aspect-square border border-solid rounded-xl grid place-items-center 
+        blur-in aspect-square border border-solid rounded-xl flex justify-center items-center 
         ${isOpen || isPaired ? 'border-primary' : 'border-secondary'} p-1 sm:p-2  
         ${notMatching ? 'border-red-500 delay-500' : ''}
       `}
@@ -27,7 +27,7 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
       {
         isOpen || isPaired
           ? <img src={image} alt="Card" className={`w-full h-full object-cover rounded-xl blur-in`} />
-          : <div className='blur-in'>
+          : <div className='blur-in flex justify-center items-center'>
               <FontAwesomeIcon icon={solid('shapes')} className='text-secondary text-3xl sm:text-6xl' />
             </div>
       }

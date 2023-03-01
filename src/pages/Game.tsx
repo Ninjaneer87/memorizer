@@ -1,5 +1,5 @@
-import Board from "components/features/Game/Board";
-import GameControls from "components/features/Game/GameControls";
+import Board from "components/Board";
+import GameControls from "components/GameControls";
 import { Outlet } from "react-router-dom";
 
 const Game = () => {

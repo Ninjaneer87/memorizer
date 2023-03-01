@@ -2,7 +2,7 @@ import { useStopwatch } from "hooks/useStopwatch";
 import { useStorage } from "hooks/useStorage";
 import React, { useCallback, useContext, useEffect } from "react";
 import { createContext } from "react";
-import { NUMBER_OF_PAIRS, StorageKeys } from "utils/constants";
+import { NUMBER_OF_PAIRS, STORAGE_KEYS } from "utils/constants";
 import { useCardContext } from "./cardContext";
 import { usePlayerContext } from "./playerContext";
 import { useScoreContext } from "./scoreContext";
@@ -17,7 +17,6 @@ type GameContextType = {
   pause: () => void;
   newGame: () => void;
   stop: () => void;
-  setGameOver: () => void;
 };
 
 type Props = {
@@ -25,34 +24,34 @@ type Props = {
 };
 
 export const GameContextProvider = ({ children }: Props) => {
-  const [isGameOver, setIsGameOver] = useStorage(StorageKeys.IS_GAME_OVER, false);
-  const { newCards, pairedCount } = useCardContext();
+  const [isGameOver, setIsGameOver] = useStorage(STORAGE_KEYS.IS_GAME_OVER, false);
+  const { createNewCards, matchedCardsCount } = useCardContext();
   const { isRunning, pause, reset, start, time, stop, getTimeSnapshot } = useStopwatch();
-  const { addScore } = useScoreContext();
+  const { saveScore } = useScoreContext();
   const {player} = usePlayerContext();
 
   const newGame = useCallback(() => {
     setIsGameOver(false);
-    newCards();
+    createNewCards();
     reset();
-  }, [newCards, reset, setIsGameOver])
+  }, [createNewCards, reset, setIsGameOver])
 
-  const setGameOver = useCallback(() => {
+  const gameOver = useCallback(() => {
     pause();
-    if(player) addScore(player, getTimeSnapshot());
-  }, [pause, player, getTimeSnapshot, addScore]);
+    if(player) saveScore(player, getTimeSnapshot());
+  }, [pause, player, getTimeSnapshot, saveScore]);
 
   useEffect(() => {
-    if (pairedCount === NUMBER_OF_PAIRS * 2) {
+    if (matchedCardsCount === NUMBER_OF_PAIRS * 2) {
       setIsGameOver(true);
     }
-  }, [pairedCount, setIsGameOver]);
+  }, [matchedCardsCount, setIsGameOver]);
 
   useEffect(() => {
     if (isGameOver) {
-      setGameOver()
+      gameOver()
     }
-  }, [isGameOver, setGameOver])
+  }, [isGameOver, gameOver])
 
   const context: GameContextType = {
     isRunning,
@@ -62,7 +61,6 @@ export const GameContextProvider = ({ children }: Props) => {
     newGame,
     stop,
     isGameOver,
-    setGameOver
   }
 
   return <GameContext.Provider value={context}>

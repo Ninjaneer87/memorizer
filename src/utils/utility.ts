@@ -17,7 +17,7 @@ export const createCards = (images: string[]) => {
     isOpen: false,
     isPaired: false,
     notMatching: false,
-    image
+    image,
   }));
 
   const pairs = [...imgs, ...imgs].map((item, i) => ({ ...item, id: i }));
@@ -25,17 +25,6 @@ export const createCards = (images: string[]) => {
   return cards;
 };
 
-export const shuffleCards = (cards: CardType[]) => {
+const shuffleCards = (cards: CardType[]) => {
   return [...cards.sort(() => Math.random() - Math.random())];
 };
-
-export const resetCards = (cards: CardType[]) => {
-  const resetedCards = cards.map((c) => {
-    const newC = { ...c };
-    newC.isOpen = false;
-    newC.isPaired = false;
-    return newC;
-  });
-
-  return shuffleCards(resetedCards)
-}

@@ -8,10 +8,10 @@ export const FALLBACK_IMAGES = [
   "https://images.pexels.com/photos/14691038/pexels-photo-14691038.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280",
   "https://images.pexels.com/photos/14546017/pexels-photo-14546017.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280"
 ];
-export enum StorageKeys {
+export enum STORAGE_KEYS {
   'IMAGES' = 'images',
   'IS_GAME_OVER' = 'isGameOver',
-  'PAIRED_COUNT' = 'pairedCount',
+  'MATCHED_CARDS_COUNT' = 'matchedCardsCount',
   'CARDS' = 'cards',
   'SCORES' = 'scores',
   'TIME' = 'time',

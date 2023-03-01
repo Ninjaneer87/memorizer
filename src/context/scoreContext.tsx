@@ -6,7 +6,7 @@ const ScoreContext = createContext({});
 
 type ScoreContextType = {
   scores: Score[];
-  addScore: (player: string, time: number) => void;
+  saveScore: (player: string, time: number) => void;
 }
 
 type Props = {
@@ -14,11 +14,11 @@ type Props = {
 };
 
 export const ScoreContextProvider = ({ children }: Props) => {
-  const { scores, addScore } = useScores();
+  const { scores, saveScore } = useScores();
 
   const context: ScoreContextType = {
     scores,
-    addScore,
+    saveScore,
   }
 
   return <ScoreContext.Provider value={context}>

@@ -1,6 +1,6 @@
 import { useStorage } from "hooks/useStorage";
 import { useState } from "react";
-import { StorageKeys } from "utils/constants";
+import { STORAGE_KEYS } from "utils/constants";
 import { usePexelImages } from "./usePexelImages";
 
 export type CardType = {
@@ -12,14 +12,14 @@ export type CardType = {
 };
 
 export function useCards() {
-  const { cards, setCards, newImages, clearImages, loading } = usePexelImages();
+  const { cards, setCards, getNewImages, clearImages, loading } = usePexelImages();
   const [previousCard, setPreviousCard] = useState<CardType | null>();
   const [boardDisabled, setBoardDisabled] = useState(false);
-  const [pairedCount, setPairedCount] = useStorage(StorageKeys.PAIRED_COUNT, 0);
+  const [matchedCardsCount, setPairedCount] = useStorage(STORAGE_KEYS.MATCHED_CARDS_COUNT, 0);
   
-  const newCards = () => {
+  const createNewCards = () => {
     clearImages();
-    newImages();
+    getNewImages();
     setPreviousCard(null);
     setPairedCount(0);
   };
@@ -71,9 +71,9 @@ export function useCards() {
 
   return {
     flipCard,
-    newCards,
+    createNewCards,
     cards,
-    pairedCount,
+    matchedCardsCount,
     clearImages,
     loadingImages: loading
   };
