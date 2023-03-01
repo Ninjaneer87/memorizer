@@ -1,6 +1,7 @@
 import { useStorage } from "hooks/useStorage";
 import React, { useContext } from "react";
 import { createContext } from "react";
+import { StorageKeys } from "utils/constants";
 
 const PlayerContext = createContext({});
 
@@ -15,7 +16,7 @@ type Props = {
 };
 
 export const PlayerContextProvider = ({ children }: Props) => {
-  const [player, setPlayer, loaded] = useStorage('player', '');
+  const [player, setPlayer, loaded] = useStorage(StorageKeys.PLAYER, '');
 
   const context: PlayerContextType = {
     player,

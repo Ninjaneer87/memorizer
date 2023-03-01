@@ -47,7 +47,7 @@ const Scores = () => {
               ? scores.map((score, i) => (
                 <div
                   key={score.player}
-                  className={`blur-in py-2 flex flex-wrap justify-between border border-solid border-transparent border-b-border my-2 gap-2 ${player === score.player ? 'font-extrabold' : 'opacity-50'}`}
+                  className={`blur-in py-3 flex flex-wrap justify-between border border-solid border-transparent border-b-border gap-2 ${player === score.player ? 'font-extrabold' : 'opacity-80'}`}
                   style={{ animationDelay: `${(i + 1) * 100}ms` }}
                 >
                   <div className="flex">

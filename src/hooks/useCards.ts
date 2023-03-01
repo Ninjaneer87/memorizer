@@ -1,11 +1,10 @@
 import { useStorage } from "hooks/useStorage";
 import { useState } from "react";
-import { resetCards } from "utils/utility";
+import { StorageKeys } from "utils/constants";
 import { usePexelImages } from "./usePexelImages";
 
 export type CardType = {
   id: number;
-  pairId: number;
   isOpen: boolean;
   isPaired: boolean;
   image: string;
@@ -13,14 +12,14 @@ export type CardType = {
 };
 
 export function useCards() {
-  const { cards, setCards } = usePexelImages();
+  const { cards, setCards, newImages, clearImages, loading } = usePexelImages();
   const [previousCard, setPreviousCard] = useState<CardType | null>();
   const [boardDisabled, setBoardDisabled] = useState(false);
-  const [pairedCount, setPairedCount] = useStorage("pairedCount", 0);
-
-  const newDeal = () => {
-    const resetedCards = resetCards(cards);
-    setCards(resetedCards);
+  const [pairedCount, setPairedCount] = useStorage(StorageKeys.PAIRED_COUNT, 0);
+  
+  const newCards = () => {
+    clearImages();
+    newImages();
     setPreviousCard(null);
     setPairedCount(0);
   };
@@ -41,7 +40,8 @@ export function useCards() {
   };
 
   const matchCards = (firstCard: CardType, secondCard: CardType) => {
-    if (firstCard.pairId === secondCard.pairId) {
+    // Matching
+    if (firstCard.image === secondCard.image) {
       firstCard.isPaired = true;
       secondCard.isPaired = true;
 
@@ -52,6 +52,7 @@ export function useCards() {
       return;
     }
 
+    // Not matching
     firstCard.notMatching = true;
     secondCard.notMatching = true;
     setCards([...cards]);
@@ -65,13 +66,15 @@ export function useCards() {
       setPreviousCard(null);
       setCards([...cards]);
       setBoardDisabled(false);
-    }, 1500);
+    }, 1000);
   };
 
   return {
     flipCard,
-    newDeal,
+    newCards,
     cards,
     pairedCount,
+    clearImages,
+    loadingImages: loading
   };
 }

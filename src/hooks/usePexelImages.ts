@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { createClient } from "pexels";
-import { NUMBER_OF_PAIRS, PEXEL_API_KEY } from "utils/constants";
+import {
+  FALLBACK_IMAGES,
+  NUMBER_OF_PAIRS,
+  PEXEL_API_KEY,
+  StorageKeys,
+} from "utils/constants";
 import { useStorage } from "./useStorage";
 import { Photo } from "pexels/dist/types";
 import { createCards } from "utils/utility";
@@ -12,13 +17,20 @@ const initialImages = [] as string[];
 const initialCards = [] as CardType[];
 
 export function usePexelImages() {
-  const [images, setImages, loaded] = useStorage("images", initialImages);
-  const [cards, setCards] = useStorage("cards", initialCards);
+  const [images, setImages, loaded] = useStorage(
+    StorageKeys.IMAGES,
+    initialImages
+  );
+  const [cards, setCards] = useStorage(StorageKeys.CARDS, initialCards);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (loaded && !images.length) {
+  const clearImages = () => {
+    setImages([]);
+  }
+
+  const fetchImages = useCallback(() => {
+    if (loaded) {
       setLoading(true);
 
       const imagePromises = [];
@@ -37,11 +49,14 @@ export function usePexelImages() {
           setError(null);
         })
         .catch((err) => {
+          const cards = createCards(FALLBACK_IMAGES);
+          setCards(cards);
+          setImages(FALLBACK_IMAGES);
           setError(err);
           setLoading(false);
         });
     }
-  }, [loaded, images, setImages, setCards]);
+  }, [loaded, setImages, setCards]);
 
-  return { images, cards, error, loading, setCards };
+  return { images, cards, error, loading, setCards, newImages: fetchImages, clearImages };
 }

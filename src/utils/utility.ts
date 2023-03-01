@@ -13,8 +13,7 @@ export const formatTime = (ms: number) => {
 };
 
 export const createCards = (images: string[]) => {
-  const imgs = images.map((image, i) => ({
-    pairId: i + 1,
+  const imgs = images.map((image) => ({
     isOpen: false,
     isPaired: false,
     notMatching: false,

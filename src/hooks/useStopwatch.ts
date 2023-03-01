@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { StorageKeys } from "utils/constants";
 import { useStorage } from "./useStorage";
 
 const intervalValue = 1000;
 
 export function useStopwatch() {
-  const [time, setTime] = useStorage("time", 0);
+  const [time, setTime] = useStorage(StorageKeys.TIME, 0);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
 
   const getTimeSnapshot = useCallback(() => {
-    const storageTime = localStorage.getItem("time");
+    const storageTime = localStorage.getItem(StorageKeys.TIME);
     const time = storageTime ? +storageTime : 0;
     return time;
   }, []);

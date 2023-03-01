@@ -5,17 +5,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useCardContext } from 'context/cardContext';
 
 const GameControls = () => {
   const { player, setPlayer } = usePlayerContext();
   const { time, newGame, start, isGameOver, stop } = useGameContext();
   const navigate = useNavigate();
+  const { clearImages } = useCardContext();
 
   useEffect(() => {
     if (!isGameOver && !!player) start();
   }, [start, isGameOver, player]);
 
   const handleLogout = () => {
+    clearImages();
     stop();
     setPlayer('');
   }
@@ -36,13 +39,13 @@ const GameControls = () => {
       </div>
 
       <div className='flex flex-wrap gap-4'>
-        <button onClick={handleScores} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
-          <FontAwesomeIcon className='text-xl' icon={solid('ranking-star')} />
-          <span className='text-xs'>High score</span>
-        </button>
         <button onClick={newGame} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
           <FontAwesomeIcon className='text-xl' icon={solid('repeat')} />
           <span className='text-xs'>New game</span>
+        </button>
+        <button onClick={handleScores} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
+          <FontAwesomeIcon className='text-xl' icon={solid('ranking-star')} />
+          <span className='text-xs'>Score board</span>
         </button>
         <button onClick={handleLogout} className='text-secondary uppercase flex flex-col justify-center items-center gap-2 min-w-[80px]'>
           <FontAwesomeIcon className='text-xl' icon={solid('arrow-right-from-bracket')} />

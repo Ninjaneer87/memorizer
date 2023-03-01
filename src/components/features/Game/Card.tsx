@@ -4,7 +4,6 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 type Props = {
   id: number;
   image: string;
-  pairId: number;
   animationDelay: number;
   handleFlip: (id: number) => void;
   isOpen: boolean;

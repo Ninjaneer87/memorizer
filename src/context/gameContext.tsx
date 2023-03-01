@@ -2,7 +2,7 @@ import { useStopwatch } from "hooks/useStopwatch";
 import { useStorage } from "hooks/useStorage";
 import React, { useCallback, useContext, useEffect } from "react";
 import { createContext } from "react";
-import { NUMBER_OF_PAIRS } from "utils/constants";
+import { NUMBER_OF_PAIRS, StorageKeys } from "utils/constants";
 import { useCardContext } from "./cardContext";
 import { usePlayerContext } from "./playerContext";
 import { useScoreContext } from "./scoreContext";
@@ -25,21 +25,19 @@ type Props = {
 };
 
 export const GameContextProvider = ({ children }: Props) => {
-  const [isGameOver, setIsGameOver] = useStorage('isGameOver', false);
-  const { newDeal, pairedCount } = useCardContext();
+  const [isGameOver, setIsGameOver] = useStorage(StorageKeys.IS_GAME_OVER, false);
+  const { newCards, pairedCount } = useCardContext();
   const { isRunning, pause, reset, start, time, stop, getTimeSnapshot } = useStopwatch();
   const { addScore } = useScoreContext();
   const {player} = usePlayerContext();
 
   const newGame = useCallback(() => {
-    console.log('newGame')
     setIsGameOver(false);
-    newDeal();
+    newCards();
     reset();
-  }, [newDeal, reset, setIsGameOver])
+  }, [newCards, reset, setIsGameOver])
 
   const setGameOver = useCallback(() => {
-    console.log('game over')
     pause();
     if(player) addScore(player, getTimeSnapshot());
   }, [pause, player, getTimeSnapshot, addScore]);
