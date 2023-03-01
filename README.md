@@ -2,6 +2,10 @@
 
 This is a simple card-flipping memory game
 
+## Play here
+
+You can play Memorizer at [https://memorizer-five.vercel.app/](https://memorizer-five.vercel.app/)
+
 ## Technologies used
 
 `React` | `TypeScript` | `Tailwind CSS` | `SASS`
