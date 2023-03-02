@@ -9,7 +9,6 @@ export function useStopwatch() {
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
-
   const getTimeSnapshot = useCallback(() => {
     const storageTime = localStorage.getItem(STORAGE_KEYS.TIME);
     const time = storageTime ? +storageTime : 0;

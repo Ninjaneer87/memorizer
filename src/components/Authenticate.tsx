@@ -4,12 +4,15 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useGameContext } from 'context/gameContext';
 import { usePlayerContext } from 'context/playerContext';
 import React, { useRef, useState } from 'react';
+import { useMounted } from 'hooks/useMounted';
 
 const Authenticate = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { setPlayer } = usePlayerContext();
   const { newGame } = useGameContext();
   const [error, setError] = useState(false);
+  const [errorMounted, setErrorMounted] = useMounted(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handlePlayer: React.FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
@@ -20,9 +23,13 @@ const Authenticate = () => {
       newGame();
       return
     }
+
+    clearTimeout(timeoutRef.current);
     setError(true);
-    setTimeout(() => {
+    setErrorMounted(true);
+    timeoutRef.current = setTimeout(() => {
       setError(false);
+      setErrorMounted(false, 500);
     }, 4000);
   }
 
@@ -42,9 +49,12 @@ const Authenticate = () => {
             Start the game <FontAwesomeIcon icon={faCoffee} />
           </button>
         </form>
-        <div className={`absolute left-0 bottom-[-2rem] text-center w-full text-red-400 ${error ? 'blur-in' : 'blur-out'}`}>
-          <FontAwesomeIcon icon={solid('triangle-exclamation')} /> Please enter your name
-        </div>
+        {errorMounted 
+          ? <div className={`absolute left-0 bottom-[-2rem] text-center w-full text-red-400 ${error ? 'blur-in' : 'blur-out'}`}>
+              <FontAwesomeIcon icon={solid('triangle-exclamation')} /> Please enter your name
+            </div>
+          : null
+        }
       </div>
 
       <FontAwesomeIcon

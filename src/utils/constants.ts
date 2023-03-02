@@ -11,7 +11,7 @@ export const FALLBACK_IMAGES = [
 export enum STORAGE_KEYS {
   'IMAGES' = 'images',
   'IS_GAME_OVER' = 'isGameOver',
-  'MATCHED_CARDS_COUNT' = 'matchedCardsCount',
+  'MATCHED_COUNT' = 'matchedCount',
   'CARDS' = 'cards',
   'SCORES' = 'scores',
   'TIME' = 'time',

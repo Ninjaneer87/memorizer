@@ -25,16 +25,16 @@ type Props = {
 
 export const GameContextProvider = ({ children }: Props) => {
   const [isGameOver, setIsGameOver] = useStorage(STORAGE_KEYS.IS_GAME_OVER, false);
-  const { createNewCards, matchedCardsCount } = useCardContext();
   const { isRunning, pause, reset, start, time, stop, getTimeSnapshot } = useStopwatch();
+  const { getNewCards, matchedCount } = useCardContext();
   const { saveScore } = useScoreContext();
   const {player} = usePlayerContext();
 
   const newGame = useCallback(() => {
     setIsGameOver(false);
-    createNewCards();
+    getNewCards();
     reset();
-  }, [createNewCards, reset, setIsGameOver])
+  }, [getNewCards, reset, setIsGameOver])
 
   const gameOver = useCallback(() => {
     pause();
@@ -42,10 +42,10 @@ export const GameContextProvider = ({ children }: Props) => {
   }, [pause, player, getTimeSnapshot, saveScore]);
 
   useEffect(() => {
-    if (matchedCardsCount === NUMBER_OF_PAIRS * 2) {
+    if (matchedCount === NUMBER_OF_PAIRS) {
       setIsGameOver(true);
     }
-  }, [matchedCardsCount, setIsGameOver]);
+  }, [matchedCount, setIsGameOver]);
 
   useEffect(() => {
     if (isGameOver) {

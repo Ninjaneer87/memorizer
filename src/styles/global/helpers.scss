@@ -8,7 +8,7 @@
     width: 200px;
     height: 300px;
     border-radius: 10%;
-    filter: blur(50px);
+    filter: blur(60px);
     z-index: -1;
     pointer-events: none;
     opacity: 0.5;
@@ -24,8 +24,7 @@
     bottom: 20%;
     right: 20%;
     background: var(--color-secondary);
-    animation: spin 9s linear infinite;
-    -webkit-animation: spin 9s linear infinite;
-    animation-delay: 1500ms;
+    animation: spin 18s linear infinite;
+    -webkit-animation: spin 18s linear infinite;
   }
 }

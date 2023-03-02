@@ -1,7 +1,14 @@
-import { useStorage } from "hooks/useStorage";
-import { useState } from "react";
-import { STORAGE_KEYS } from "utils/constants";
-import { usePexelImages } from "./usePexelImages";
+import { useState, useCallback } from "react";
+import { createClient } from "pexels";
+import {
+  FALLBACK_IMAGES,
+  NUMBER_OF_PAIRS,
+  PEXEL_API_KEY,
+  STORAGE_KEYS,
+} from "utils/constants";
+import { useStorage } from "./useStorage";
+import { Photo } from "pexels/dist/types";
+import { createCards } from "utils/utility";
 
 export type CardType = {
   id: number;
@@ -11,70 +18,58 @@ export type CardType = {
   notMatching: boolean;
 };
 
+const client = createClient(PEXEL_API_KEY);
+
+const initialImages = [] as string[];
+const initialCards = [] as CardType[];
+
 export function useCards() {
-  const { cards, setCards, getNewImages, clearImages, loading } = usePexelImages();
-  const [previousCard, setPreviousCard] = useState<CardType | null>();
-  const [boardDisabled, setBoardDisabled] = useState(false);
-  const [matchedCardsCount, setPairedCount] = useStorage(STORAGE_KEYS.MATCHED_CARDS_COUNT, 0);
-  
-  const createNewCards = () => {
-    clearImages();
-    getNewImages();
-    setPreviousCard(null);
-    setPairedCount(0);
+  const [images, setImages] = useStorage(
+    STORAGE_KEYS.IMAGES,
+    initialImages
+  );
+  const [cards, setCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const clearImages = () => {
+    setImages([]);
   };
 
-  const flipCard = (id: number) => {
-    if (boardDisabled) return;
+  const fetchImages = useCallback(() => {
+    setLoading(true);
 
-    const selectedCard = cards.find((c) => c.id === id);
-    if (selectedCard) {
-      selectedCard.isOpen = true;
-      if (!previousCard) {
-        setPreviousCard(selectedCard);
-        return;
-      }
-      setBoardDisabled(true);
-      matchCards(previousCard, selectedCard);
-    }
-  };
-
-  const matchCards = (firstCard: CardType, secondCard: CardType) => {
-    // Matching
-    if (firstCard.image === secondCard.image) {
-      firstCard.isPaired = true;
-      secondCard.isPaired = true;
-
-      setPreviousCard(null);
-      setCards([...cards]);
-      setBoardDisabled(false);
-      setPairedCount((prev) => prev + 2);
-      return;
+    const imagePromises = [];
+    for (let i = 0; i < NUMBER_OF_PAIRS; i++) {
+      imagePromises.push(client.photos.random());
     }
 
-    // Not matching
-    firstCard.notMatching = true;
-    secondCard.notMatching = true;
-    setCards([...cards]);
-
-    setTimeout(() => {
-      firstCard.notMatching = false;
-      secondCard.notMatching = false;
-      firstCard.isOpen = false;
-      secondCard.isOpen = false;
-
-      setPreviousCard(null);
-      setCards([...cards]);
-      setBoardDisabled(false);
-    }, 1000);
-  };
+    Promise.all(imagePromises)
+      .then((responses) => Promise.all(responses))
+      .then((images) => {
+        const imageUrls = images.map((i) => (i as Photo).src.tiny);
+        const cards = createCards(imageUrls);
+        setCards(cards);
+        setImages(imageUrls);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((err) => {
+        const cards = createCards(FALLBACK_IMAGES);
+        setCards(cards);
+        setImages(FALLBACK_IMAGES);
+        setError(err);
+        setLoading(false);
+      });
+  }, [setImages, setCards]);
 
   return {
-    flipCard,
-    createNewCards,
+    images,
     cards,
-    matchedCardsCount,
+    error,
+    loading,
+    setCards,
+    getNewImages: fetchImages,
     clearImages,
-    loadingImages: loading
   };
 }

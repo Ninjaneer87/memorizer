@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import React from 'react';
 
 type Props = {
   id: number;
@@ -35,4 +36,4 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
   );
 };
 
-export default Card;
+export default React.memo(Card);

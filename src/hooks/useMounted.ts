@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 type MountHandler = (value: boolean, delay?: number) => any;
 
-export function useMounted(autoMount: boolean = true): [boolean, MountHandler, boolean] {
+export function useMounted(autoMount = true): [boolean, MountHandler, boolean] {
   const [mounted, setMounted] = useState(false);
   const [mounting, setMounting] = useState(false);
 
