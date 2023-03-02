@@ -20,25 +20,25 @@ const CardContext = createContext({});
 
 export const CardContextProvider = ({ children }: Props) => {
   const { cards, setCards, getNewImages, clearImages, loading } = useCards();
-  const [firstCardId, setFirstCardId] = useState<number | null>();
+  const [previousCard, setPreviousCard] = useState<CardType | null>();
   const [boardDisabled, setBoardDisabled] = useState(false);
   const [matchedCount, setMatchedCount] = useStorage(STORAGE_KEYS.MATCHED_COUNT, 0);
   
   const getNewCards = useCallback(() => {
     clearImages();
     getNewImages();
-    setFirstCardId(null);
+    setPreviousCard(null);
     setMatchedCount(0);
   }, [clearImages, getNewImages, setMatchedCount]);
 
-  const matchCards = useCallback((firstCard: CardType, secondCard: CardType, clonedCards: CardType[]) => {
+  const matchCards = useCallback((firstCard: CardType, secondCard: CardType) => {
     // Matching
     if (firstCard.image === secondCard.image) {
       firstCard.isPaired = true;
       secondCard.isPaired = true;
 
-      setFirstCardId(null);
-      setCards(clonedCards);
+      setPreviousCard(null);
+      setCards([...cards]);
       setBoardDisabled(false);
       setMatchedCount((prev) => ++prev);
       return;
@@ -47,7 +47,7 @@ export const CardContextProvider = ({ children }: Props) => {
     // Not matching
     firstCard.notMatching = true;
     secondCard.notMatching = true;
-    setCards(clonedCards);
+    setCards([...cards]);
 
     setTimeout(() => {
       firstCard.notMatching = false;
@@ -55,32 +55,26 @@ export const CardContextProvider = ({ children }: Props) => {
       firstCard.isOpen = false;
       secondCard.isOpen = false;
 
-      setFirstCardId(null);
-      setCards(clonedCards);
+      setPreviousCard(null);
+      setCards([...cards]);
       setBoardDisabled(false);
     }, 1000);
-  }, [setCards, setMatchedCount]);
+  }, [cards, setCards, setMatchedCount]);
 
-  const flipCard = useCallback((selectedCardId: number) => {
+  const flipCard = useCallback((id: number) => {
     if (boardDisabled) return;
 
-    const clonedCards = [...cards];
-    const selectedCard = clonedCards.find((c) => c.id === selectedCardId);
+    const selectedCard = cards.find((c) => c.id === id);
     if (selectedCard) {
       selectedCard.isOpen = true;
-
-      if (!firstCardId) {
-        setFirstCardId(selectedCard.id);
+      if (!previousCard) {
+        setPreviousCard(selectedCard);
         return;
       }
-
-      const firstCard = clonedCards.find((c) => c.id === firstCardId);
-      if(firstCard) {
-        setBoardDisabled(true);
-        matchCards(firstCard, selectedCard, clonedCards);
-      }
+      setBoardDisabled(true);
+      matchCards(previousCard, selectedCard);
     }
-  }, [boardDisabled, matchCards, cards, firstCardId]);
+  }, [boardDisabled, matchCards, cards, previousCard]);
 
   const context: CardContextType = {
     cards,
