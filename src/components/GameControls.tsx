@@ -8,15 +8,15 @@ import { useEffect } from 'react';
 
 const GameControls = () => {
   const { player, setPlayer } = usePlayerContext();
-  const { time, newGame, start, isGameOver, stop } = useGameContext();
+  const { time, newGame, startTime, isGameOver, stopTime } = useGameContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isGameOver && !!player) start();
-  }, [start, isGameOver, player]);
+    if (!isGameOver && !!player) startTime();
+  }, [startTime, isGameOver, player]);
 
   const handleLogout = () => {
-    stop();
+    stopTime();
     setPlayer('');
   }
 

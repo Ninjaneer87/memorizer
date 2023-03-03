@@ -1,5 +1,5 @@
 import { useStorage } from "hooks/useStorage";
-import React, { useContext, useCallback, useMemo } from "react";
+import { useContext, useCallback, useMemo, PropsWithChildren } from "react";
 import { createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 
@@ -11,14 +11,11 @@ type ScoreContextType = {
   scores: Score[];
   saveScore: (player: string, time: number) => void;
 }
-type Props = {
-  children: React.ReactNode;
-};
 
 const ScoreContext = createContext({});
 const initialScores = [] as Score[];
 
-export const ScoreContextProvider = ({ children }: Props) => {
+export const ScoreContextProvider = ({ children }: PropsWithChildren) => {
   const [scores, setScores] = useStorage(STORAGE_KEYS.SCORES, initialScores);
 
   const saveScore = useCallback(

@@ -12,7 +12,7 @@ export function useStorage<T>(key: string, initialValue: T) {
 
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     const storageValue = localStorage.getItem(key);
-    const storedValue = storageValue ? JSON.parse(storageValue) : initialValue;
+    const storedValue: T = storageValue ? JSON.parse(storageValue) : initialValue;
     const newValue = value instanceof Function ? value(storedValue) : value;
     
     setStoredValue(newValue);

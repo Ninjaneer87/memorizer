@@ -6,7 +6,7 @@ import {
   PEXEL_API_KEY,
   STORAGE_KEYS,
 } from "utils/constants";
-import { useStorage } from "./useStorage";
+import { useStorage } from "hooks/useStorage";
 import { Photo } from "pexels/dist/types";
 import { createCards } from "utils/utility";
 
@@ -31,14 +31,9 @@ export function useCards() {
 
   const fetchImages = useCallback(() => {
     setLoading(true);
-
-    const imagePromises = [];
-    for (let i = 0; i < NUMBER_OF_PAIRS; i++) {
-      imagePromises.push(client.photos.random());
-    }
-
+    
+    const imagePromises = Array.from(Array(NUMBER_OF_PAIRS)).map(() => client.photos.random());
     Promise.all(imagePromises)
-      .then((responses) => Promise.all(responses))
       .then((images) => {
         const imageUrls = images.map((i) => (i as Photo).src.tiny);
         const cards = createCards(imageUrls);

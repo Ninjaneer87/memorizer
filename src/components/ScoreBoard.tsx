@@ -11,17 +11,17 @@ import { usePlayerContext } from "context/playerContext";
 const ScoreBoard = () => {
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
-  const { pause, start, isGameOver } = useGameContext();
+  const { pauseTime, startTime, isGameOver } = useGameContext();
   const { scores } = useScoreContext();
   const { player } = usePlayerContext();
 
   useEffect(() => {
-    if (!isGameOver) pause();
+    if (!isGameOver) pauseTime();
 
     return () => {
-      if (!isGameOver) start()
+      if (!isGameOver) startTime()
     };
-  }, [pause, start, isGameOver]);
+  }, [pauseTime, startTime, isGameOver]);
 
   const handleClose = () => {
     setClosing(true);

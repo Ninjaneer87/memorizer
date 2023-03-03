@@ -11,9 +11,3 @@
     @include colors;
   }
 }
-
-@layer components {
-  .gradient {
-    @apply bg-gradient-to-r from-primary to-secondary;
-  }
-}

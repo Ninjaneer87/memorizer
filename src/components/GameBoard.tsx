@@ -1,12 +1,12 @@
 import { useCardContext } from "context/cardContext";
-import Card from "./Card";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { useGameContext } from "context/gameContext";
 import { formatTime } from "utils/utility";
 import { useNavigate } from "react-router-dom";
+import Card from "components/Card";
 
-const Board = () => {
+const GameBoard = () => {
   const { cards, flipCard, loadingImages } = useCardContext();
   const { isGameOver, time, newGame } = useGameContext();
   const navigate = useNavigate();
@@ -51,10 +51,10 @@ const Board = () => {
           key={id}
           image={image}
           notMatching={notMatching}
-          id={id}
           isOpen={isOpen}
           isPaired={isPaired}
           handleFlip={flipCard}
+          index={i}
           animationDelay={isGameOver ? 0 : i * 100}
         />
       ))
@@ -63,4 +63,4 @@ const Board = () => {
   );
 };
 
-export default Board;
+export default GameBoard;

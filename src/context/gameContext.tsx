@@ -1,31 +1,27 @@
 import { useStopwatch } from "hooks/useStopwatch";
 import { useStorage } from "hooks/useStorage";
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo, PropsWithChildren } from "react";
 import { createContext } from "react";
 import { NUMBER_OF_PAIRS, STORAGE_KEYS } from "utils/constants";
-import { useCardContext } from "./cardContext";
-import { usePlayerContext } from "./playerContext";
-import { useScoreContext } from "./scoreContext";
+import { useCardContext } from "context/cardContext";
+import { usePlayerContext } from "context/playerContext";
+import { useScoreContext } from "context/scoreContext";
 
 type GameContextType = {
-  isRunning: boolean;
+  isTimeRunning: boolean;
   isGameOver: boolean;
   time: number;
-  start: () => void;
-  pause: () => void;
+  startTime: () => void;
+  pauseTime: () => void;
   newGame: () => void;
-  stop: () => void;
-};
-
-type Props = {
-  children: React.ReactNode;
+  stopTime: () => void;
 };
 
 const GameContext = createContext({});
 
-export const GameContextProvider = ({ children }: Props) => {
+export const GameContextProvider = ({ children }: PropsWithChildren) => {
   const [isGameOver, setIsGameOver] = useStorage(STORAGE_KEYS.IS_GAME_OVER, false);
-  const { isRunning, pause, reset, start, time, stop, getTimeSnapshot } = useStopwatch();
+  const { isTimeRunning, pauseTime, restartTime, startTime, time, stopTime, getTimeSnapshot } = useStopwatch();
   const { getNewCards, matchingPairsCount } = useCardContext();
   const { saveScore } = useScoreContext();
   const { player } = usePlayerContext();
@@ -33,14 +29,14 @@ export const GameContextProvider = ({ children }: Props) => {
   const newGame = useCallback(() => {
     setIsGameOver(false);
     getNewCards();
-    reset();
-  }, [getNewCards, reset, setIsGameOver])
+    restartTime();
+  }, [getNewCards, restartTime, setIsGameOver])
 
   const gameOver = useCallback(() => {
     setIsGameOver(true);
-    pause();
+    pauseTime();
     if(player) saveScore(player, getTimeSnapshot());
-  }, [pause, player, getTimeSnapshot, saveScore, setIsGameOver]);
+  }, [pauseTime, player, getTimeSnapshot, saveScore, setIsGameOver]);
 
   useEffect(() => {
     if (matchingPairsCount === NUMBER_OF_PAIRS) {
@@ -49,14 +45,14 @@ export const GameContextProvider = ({ children }: Props) => {
   }, [matchingPairsCount, gameOver]);
 
   const context: GameContextType = useMemo(() => ({
-    isRunning,
+    isTimeRunning,
     time,
-    start,
-    pause,
+    startTime,
+    pauseTime,
     newGame,
-    stop,
+    stopTime,
     isGameOver,
-  }), [isRunning, time, start, pause, newGame, stop, isGameOver]);
+  }), [isTimeRunning, time, startTime, pauseTime, newGame, stopTime, isGameOver]);
 
   return <GameContext.Provider value={context}>
     {children}

@@ -1,7 +1,7 @@
 import { CardType, useCards } from "hooks/useCards";
 import { usePreventReload } from "hooks/usePreventReload";
 import { useStorage } from "hooks/useStorage";
-import React, { useContext, useState, useCallback, useMemo } from "react";
+import { useContext, useState, useCallback, useMemo, PropsWithChildren } from "react";
 import { createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 
@@ -12,32 +12,28 @@ type CardContextType = {
   matchingPairsCount: number;
   loadingImages: boolean;
 };
-type Props = {
-  children: React.ReactNode;
-};
 
 const CardContext = createContext({});
 
-export const CardContextProvider = ({ children }: Props) => {
+export const CardContextProvider = ({ children }: PropsWithChildren) => {
   const { cards, setCards, getNewImages, loading } = useCards();
-  const [previousCardId, setPreviousCardId] = useStorage<number | null>('previousCardId', null);
+  const [firstCardIndex, setFirstCardIndex] = useStorage<number | null>(STORAGE_KEYS.FIRST_CARD_INDEX, null);
   const [boardDisabled, setBoardDisabled] = useState(false);
   const [matchingPairsCount, setMatchingPairsCount] = useStorage(STORAGE_KEYS.MATCHING_PAIRS_COUNT, 0);
   usePreventReload(boardDisabled);
 
   const getNewCards = useCallback(() => {
     getNewImages();
-    setPreviousCardId(null);
+    setFirstCardIndex(null);
     setMatchingPairsCount(0);
-  }, [getNewImages, setMatchingPairsCount, setPreviousCardId]);
+  }, [getNewImages, setMatchingPairsCount, setFirstCardIndex]);
 
   const matchCards = useCallback((firstCard: CardType, secondCard: CardType, clonedCards: CardType[]) => {
     // Matching
     if (firstCard.image === secondCard.image) {
       firstCard.isPaired = true;
       secondCard.isPaired = true;
-
-      setPreviousCardId(null);
+      setFirstCardIndex(null);
       setCards(clonedCards);
       setBoardDisabled(false);
       setMatchingPairsCount((prev) => ++prev);
@@ -48,40 +44,34 @@ export const CardContextProvider = ({ children }: Props) => {
     firstCard.notMatching = true;
     secondCard.notMatching = true;
     setCards(clonedCards);
-
     setTimeout(() => {
       firstCard.notMatching = false;
       secondCard.notMatching = false;
       firstCard.isOpen = false;
       secondCard.isOpen = false;
-
-      setPreviousCardId(null);
+      setFirstCardIndex(null);
       setCards(clonedCards);
       setBoardDisabled(false);
     }, 1000);
-  }, [setCards, setMatchingPairsCount, setPreviousCardId]);
+  }, [setCards, setMatchingPairsCount, setFirstCardIndex]);
 
-  const flipCard = useCallback((selectedCardId: number) => {
+  const flipCard = useCallback((selectedCardIndex: number) => {
     if (boardDisabled) return;
 
     const clonedCards = cards.map(c => ({ ...c }));
-    const selectedCard = clonedCards.find((c) => c.id === selectedCardId);
-    if (selectedCard) {
-      selectedCard.isOpen = true;
+    const selectedCard = clonedCards[selectedCardIndex];
+    selectedCard.isOpen = true;
 
-      if (previousCardId === null) {
-        setPreviousCardId(selectedCard.id);
-        setCards(clonedCards);
-        return;
-      }
-
-      const previousCard = clonedCards.find((c) => c.id === previousCardId);
-      if (previousCard) {
-        setBoardDisabled(true);
-        matchCards(previousCard, selectedCard, clonedCards);
-      }
+    if (firstCardIndex === null) {
+      setFirstCardIndex(selectedCardIndex);
+      setCards(clonedCards);
+      return;
     }
-  }, [boardDisabled, matchCards, cards, previousCardId, setCards, setPreviousCardId]);
+
+    const firstCard = clonedCards[firstCardIndex];
+    setBoardDisabled(true);
+    matchCards(firstCard, selectedCard, clonedCards);
+  }, [boardDisabled, matchCards, cards, firstCardIndex, setCards, setFirstCardIndex]);
 
   const context: CardContextType = useMemo(() => ({
     cards,

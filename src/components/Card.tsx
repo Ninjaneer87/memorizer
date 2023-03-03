@@ -3,25 +3,25 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 import React from 'react';
 
 type Props = {
-  id: number;
   image: string;
   animationDelay: number;
   handleFlip: (id: number) => void;
   isOpen: boolean;
   isPaired: boolean;
   notMatching: boolean;
+  index: number;
 }
-const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired, id }: Props) => {
+const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired, index }: Props) => {
   const flip = () => {
-    !isOpen && handleFlip(id);
+    !isOpen && handleFlip(index);
   }
   
   return (
     <button
       style={{ animationDelay: `${animationDelay}ms` }}
       className={`
-        blur-in aspect-square border border-solid rounded-xl flex justify-center items-center 
-        ${isOpen || isPaired ? 'border-primary' : 'border-secondary'} p-1 sm:p-2  
+        blur-in aspect-square border border-solid rounded-xl flex justify-center items-center p-1 sm:p-2  
+        ${isOpen || isPaired ? 'border-primary' : 'border-secondary'}
         ${notMatching ? 'border-red-500 delay-500' : ''}
       `}
       onClick={flip}
@@ -29,9 +29,7 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
       {
         isOpen || isPaired
           ? <img src={image} alt="Card" className={`w-full h-full object-cover rounded-xl blur-in`} />
-          : <div className='blur-in flex justify-center items-center'>
-              <FontAwesomeIcon icon={solid('shapes')} className='text-secondary text-3xl sm:text-6xl' />
-            </div>
+          : <FontAwesomeIcon icon={solid('shapes')} className='blur-in text-secondary text-3xl sm:text-6xl' />
       }
     </button>
   );

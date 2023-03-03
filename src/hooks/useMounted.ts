@@ -14,7 +14,7 @@ export function useMounted(autoMount = true): [boolean, MountHandler, boolean] {
 
     setTimeout(() => {
       setMounted(value);
-      setMounting(false)
+      setMounting(false);
     }, delay);
   }, [mounted]);
 

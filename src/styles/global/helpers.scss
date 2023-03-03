@@ -1,3 +1,25 @@
+.blur-in {
+  animation: blur-in 300ms ease-in;
+  animation-fill-mode: backwards;
+  -webkit-animation-fill-mode: backwards;
+}
+
+.blur-out {
+  animation: blur-out 300ms ease-in;
+  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+}
+
+.pulse {
+  animation: pulse 1s linear infinite;
+  -webkit-animation: pulse 1s linear infinite;
+}
+
+.spin {
+  animation: spin 10s linear infinite;
+  -webkit-animation: spin 10s linear infinite;
+}
+
 .gradient-wrapper {
   position: relative;
 
