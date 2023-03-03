@@ -5,20 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useCardContext } from 'context/cardContext';
 
 const GameControls = () => {
   const { player, setPlayer } = usePlayerContext();
   const { time, newGame, start, isGameOver, stop } = useGameContext();
   const navigate = useNavigate();
-  const { clearImages } = useCardContext();
 
   useEffect(() => {
     if (!isGameOver && !!player) start();
   }, [start, isGameOver, player]);
 
   const handleLogout = () => {
-    clearImages();
     stop();
     setPlayer('');
   }

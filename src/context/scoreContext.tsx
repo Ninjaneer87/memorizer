@@ -1,5 +1,5 @@
 import { useStorage } from "hooks/useStorage";
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useMemo } from "react";
 import { createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 
@@ -45,10 +45,10 @@ export const ScoreContextProvider = ({ children }: Props) => {
     [setScores]
   );
 
-  const context: ScoreContextType = {
+  const context: ScoreContextType = useMemo(() =>({
     scores,
     saveScore,
-  }
+  }), [scores, saveScore])
 
   return <ScoreContext.Provider value={context}>
     {children}

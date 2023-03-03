@@ -1,5 +1,3 @@
-import { CardType } from "hooks/useCards";
-
 export const formatTime = (ms: number) => {
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
@@ -13,18 +11,14 @@ export const formatTime = (ms: number) => {
 };
 
 export const createCards = (images: string[]) => {
-  const imgs = images.map((image) => ({
+  const cards = images.map((image) => ({
     isOpen: false,
     isPaired: false,
     notMatching: false,
     image,
   }));
 
-  const pairs = [...imgs, ...imgs].map((item, i) => ({ ...item, id: i }));
-  const cards = shuffleCards(pairs);
-  return cards;
-};
-
-const shuffleCards = (cards: CardType[]) => {
-  return [...cards.sort(() => Math.random() - Math.random())];
+  const pairedCards = [...cards, ...cards].map((item, i) => ({ ...item, id: i }));
+  const shuffledCards = pairedCards.sort(() => Math.random() - Math.random());
+  return shuffledCards;
 };

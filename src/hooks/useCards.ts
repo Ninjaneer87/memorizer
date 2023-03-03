@@ -24,17 +24,10 @@ const initialImages = [] as string[];
 const initialCards = [] as CardType[];
 
 export function useCards() {
-  const [images, setImages] = useStorage(
-    STORAGE_KEYS.IMAGES,
-    initialImages
-  );
+  const [images, setImages] = useStorage(STORAGE_KEYS.IMAGES, initialImages);
   const [cards, setCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const clearImages = () => {
-    setImages([]);
-  };
 
   const fetchImages = useCallback(() => {
     setLoading(true);
@@ -70,6 +63,5 @@ export function useCards() {
     loading,
     setCards,
     getNewImages: fetchImages,
-    clearImages,
   };
 }

@@ -15,6 +15,7 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
   const flip = () => {
     !isOpen && handleFlip(id);
   }
+  
   return (
     <button
       style={{ animationDelay: `${animationDelay}ms` }}

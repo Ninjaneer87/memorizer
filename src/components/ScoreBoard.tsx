@@ -21,7 +21,7 @@ const ScoreBoard = () => {
     return () => {
       if (!isGameOver) start()
     };
-  }, [pause, start, isGameOver])
+  }, [pause, start, isGameOver]);
 
   const handleClose = () => {
     setClosing(true);

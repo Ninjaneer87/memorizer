@@ -1,13 +1,13 @@
 import { CardType, useCards } from "hooks/useCards";
+import { usePreventReload } from "hooks/usePreventReload";
 import { useStorage } from "hooks/useStorage";
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useCallback, useMemo } from "react";
 import { createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 
 type CardContextType = {
   cards: CardType[];
   getNewCards: () => void;
-  clearImages: () => void;
   flipCard: (id: number) => void;
   matchingPairsCount: number;
   loadingImages: boolean;
@@ -19,17 +19,17 @@ type Props = {
 const CardContext = createContext({});
 
 export const CardContextProvider = ({ children }: Props) => {
-  const { cards, setCards, getNewImages, clearImages, loading } = useCards();
-  const [previousCardId, setPreviousCardId] = useState<number | null>(null);
+  const { cards, setCards, getNewImages, loading } = useCards();
+  const [previousCardId, setPreviousCardId] = useStorage<number | null>('previousCardId', null);
   const [boardDisabled, setBoardDisabled] = useState(false);
   const [matchingPairsCount, setMatchingPairsCount] = useStorage(STORAGE_KEYS.MATCHING_PAIRS_COUNT, 0);
+  usePreventReload(boardDisabled);
 
   const getNewCards = useCallback(() => {
-    clearImages();
     getNewImages();
     setPreviousCardId(null);
     setMatchingPairsCount(0);
-  }, [clearImages, getNewImages, setMatchingPairsCount]);
+  }, [getNewImages, setMatchingPairsCount, setPreviousCardId]);
 
   const matchCards = useCallback((firstCard: CardType, secondCard: CardType, clonedCards: CardType[]) => {
     // Matching
@@ -59,7 +59,7 @@ export const CardContextProvider = ({ children }: Props) => {
       setCards(clonedCards);
       setBoardDisabled(false);
     }, 1000);
-  }, [setCards, setMatchingPairsCount]);
+  }, [setCards, setMatchingPairsCount, setPreviousCardId]);
 
   const flipCard = useCallback((selectedCardId: number) => {
     if (boardDisabled) return;
@@ -81,16 +81,15 @@ export const CardContextProvider = ({ children }: Props) => {
         matchCards(previousCard, selectedCard, clonedCards);
       }
     }
-  }, [boardDisabled, matchCards, cards, previousCardId, setCards]);
+  }, [boardDisabled, matchCards, cards, previousCardId, setCards, setPreviousCardId]);
 
-  const context: CardContextType = {
+  const context: CardContextType = useMemo(() => ({
     cards,
     getNewCards,
     flipCard,
     matchingPairsCount,
-    clearImages,
     loadingImages: loading
-  }
+  }), [cards, getNewCards, flipCard, matchingPairsCount, loading])
 
   return <CardContext.Provider value={context}>
     {children}
