@@ -1,14 +1,8 @@
-import { useState, useCallback } from "react";
-import { createClient } from "pexels";
-import {
-  FALLBACK_IMAGES,
-  NUMBER_OF_PAIRS,
-  PEXEL_API_KEY,
-  STORAGE_KEYS,
-} from "utils/constants";
+import { useState, useCallback, useRef } from "react";
+import { FALLBACK_IMAGES, STORAGE_KEYS, PEXELS_HEADERS } from "utils/constants";
 import { useStorage } from "hooks/useStorage";
-import { Photo } from "pexels/dist/types";
-import { createCards } from "utils/utility";
+import { Photos } from "pexels/dist/types";
+import { createCards, pexelsUrl } from "utils/utility";
 
 export type CardType = {
   id: number;
@@ -18,45 +12,39 @@ export type CardType = {
   notMatching: boolean;
 };
 
-const client = createClient(PEXEL_API_KEY);
-
-const initialImages = [] as string[];
 const initialCards = [] as CardType[];
 
 export function useCards() {
-  const [images, setImages] = useStorage(STORAGE_KEYS.IMAGES, initialImages);
   const [cards, setCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const abortControllerRef = useRef(new AbortController());
 
-  const fetchImages = useCallback(() => {
-    setLoading(true);
-    
-    const imagePromises = Array.from(Array(NUMBER_OF_PAIRS)).map(() => client.photos.random());
-    Promise.all(imagePromises)
-      .then((images) => {
-        const imageUrls = images.map((i) => (i as Photo).src.tiny);
-        const cards = createCards(imageUrls);
-        setCards(cards);
-        setImages(imageUrls);
-        setLoading(false);
-        setError(null);
-      })
-      .catch((err) => {
+  const createNewCards = useCallback(async () => {
+    abortControllerRef.current.abort();
+    setIsFetching(true);
+
+    try {
+      abortControllerRef.current = new AbortController();
+      const { signal } = abortControllerRef.current;
+      const response = await fetch(pexelsUrl(), { headers: PEXELS_HEADERS, signal});
+      const images = await response.json() as Photos;
+      const urls = images.photos.map((i) => i.src.tiny);
+      const cards = createCards(urls);
+      setCards(cards);
+      setIsFetching(false);
+    } catch (error: any) {
+      if(error.name !== "AbortError") {
         const cards = createCards(FALLBACK_IMAGES);
         setCards(cards);
-        setImages(FALLBACK_IMAGES);
-        setError(err);
-        setLoading(false);
-      });
-  }, [setImages, setCards]);
+        setIsFetching(false);
+      }
+    }
+  }, [setCards]);
 
   return {
-    images,
     cards,
-    error,
-    loading,
     setCards,
-    getNewImages: fetchImages,
+    isFetching,
+    createNewCards,
   };
 }

@@ -8,7 +8,7 @@ import { usePlayerContext } from "context/playerContext";
 import { useScoreContext } from "context/scoreContext";
 
 type GameContextType = {
-  isTimeRunning: boolean;
+  isPaused: boolean;
   isGameOver: boolean;
   time: number;
   startTime: () => void;
@@ -21,38 +21,45 @@ const GameContext = createContext({});
 
 export const GameContextProvider = ({ children }: PropsWithChildren) => {
   const [isGameOver, setIsGameOver] = useStorage(STORAGE_KEYS.IS_GAME_OVER, false);
-  const { isTimeRunning, pauseTime, restartTime, startTime, time, stopTime, getTimeSnapshot } = useStopwatch();
-  const { getNewCards, matchingPairsCount } = useCardContext();
+  const { isPaused, pauseTime, startTime, time, stopTime, getTimeSnapshot } = useStopwatch();
+  const { getNewCards, matchingPairsCount, creatingNewCards, setMatchingPairsCount } = useCardContext();
   const { saveScore } = useScoreContext();
   const { player } = usePlayerContext();
 
   const newGame = useCallback(() => {
+    stopTime();
     setIsGameOver(false);
     getNewCards();
-    restartTime();
-  }, [getNewCards, restartTime, setIsGameOver])
+  }, [getNewCards, setIsGameOver, stopTime]);
+
+  const resumeGame = useCallback(() => {
+    if(!creatingNewCards && !isGameOver && !!player) {
+      startTime()
+    };
+  }, [creatingNewCards, startTime, isGameOver, player]);
 
   const gameOver = useCallback(() => {
     setIsGameOver(true);
+    setMatchingPairsCount(0);
     pauseTime();
     if(player) saveScore(player, getTimeSnapshot());
-  }, [pauseTime, player, getTimeSnapshot, saveScore, setIsGameOver]);
+  }, [pauseTime, player, getTimeSnapshot, saveScore, setIsGameOver, setMatchingPairsCount]);
 
   useEffect(() => {
-    if (matchingPairsCount === NUMBER_OF_PAIRS) {
-      gameOver()
-    }
+    if (matchingPairsCount === NUMBER_OF_PAIRS) gameOver();
   }, [matchingPairsCount, gameOver]);
 
+  useEffect(resumeGame, [resumeGame]);
+
   const context: GameContextType = useMemo(() => ({
-    isTimeRunning,
+    isPaused,
     time,
     startTime,
     pauseTime,
     newGame,
     stopTime,
     isGameOver,
-  }), [isTimeRunning, time, startTime, pauseTime, newGame, stopTime, isGameOver]);
+  }), [isPaused, time, startTime, pauseTime, newGame, stopTime, isGameOver]);
 
   return <GameContext.Provider value={context}>
     {children}

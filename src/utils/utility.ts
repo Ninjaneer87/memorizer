@@ -1,3 +1,5 @@
+import { NUMBER_OF_PAIRS } from "./constants";
+
 export const formatTime = (ms: number) => {
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
@@ -22,3 +24,5 @@ export const createCards = (images: string[]) => {
   const shuffledCards = pairedCards.sort(() => Math.random() - Math.random());
   return shuffledCards;
 };
+
+export const pexelsUrl = () => `https://api.pexels.com/v1//curated?page=${Math.ceil(Math.random() * 50)}&per_page=${NUMBER_OF_PAIRS}`;

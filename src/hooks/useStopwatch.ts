@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 import { useStorage } from "hooks/useStorage";
 
@@ -6,7 +6,7 @@ const intervalValue = 1000;
 
 export function useStopwatch() {
   const [time, setTime] = useStorage(STORAGE_KEYS.TIME, 0);
-  const [isTimeRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useStorage(STORAGE_KEYS.IS_PAUSED, true);
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
   const getTimeSnapshot = useCallback(() => {
@@ -16,39 +16,33 @@ export function useStopwatch() {
   }, []);
 
   const startTime = useCallback(() => {
-    setIsRunning(true);
-  }, []);
+    setIsPaused(false);
+  }, [setIsPaused]);
 
   const pauseTime = useCallback(() => {
-    setIsRunning(false);
-  }, []);
+    setIsPaused(true);
+  }, [setIsPaused]);
 
   const stopTime = useCallback(() => {
     setTime(0);
-    setIsRunning(false);
-  }, [setTime]);
-
-  const restartTime = useCallback(() => {
-    setTime(0);
-    setIsRunning(true);
-  }, [setTime]);
+    setIsPaused(true);
+  }, [setTime, setIsPaused]);
 
   useEffect(() => {
-    if (isTimeRunning) {
+    if (!isPaused) {
       intervalRef.current = setInterval(() => {
         setTime((prevTime) => prevTime + intervalValue);
       }, intervalValue);
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isTimeRunning, setTime]);
+  }, [isPaused, setTime]);
 
   return {
-    isTimeRunning,
+    isPaused,
     time,
     startTime,
     pauseTime,
-    restartTime,
     stopTime,
     getTimeSnapshot,
   };

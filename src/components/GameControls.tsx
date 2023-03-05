@@ -4,16 +4,11 @@ import { formatTime } from 'utils/utility';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const GameControls = () => {
   const { player, setPlayer } = usePlayerContext();
-  const { time, newGame, startTime, isGameOver, stopTime } = useGameContext();
+  const { time, newGame, stopTime } = useGameContext();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isGameOver && !!player) startTime();
-  }, [startTime, isGameOver, player]);
 
   const handleLogout = () => {
     stopTime();

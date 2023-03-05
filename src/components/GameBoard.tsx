@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import Card from "components/Card";
 
 const GameBoard = () => {
-  const { cards, flipCard, loadingImages } = useCardContext();
+  const { cards, flipCard, creatingNewCards } = useCardContext();
   const { isGameOver, time, newGame } = useGameContext();
   const navigate = useNavigate();
 
   const handleScoreBoards = () => navigate('scores');
 
-  if (loadingImages)
+  if (creatingNewCards)
     return (
       <div className="pulse text-center mx-auto my-20 text-4xl">
         <FontAwesomeIcon icon={solid('gears')} /> LOADING...

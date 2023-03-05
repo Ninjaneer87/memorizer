@@ -15,7 +15,7 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
   const flip = () => {
     !isOpen && handleFlip(index);
   }
-  
+
   return (
     <button
       style={{ animationDelay: `${animationDelay}ms` }}
@@ -26,11 +26,8 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
       `}
       onClick={flip}
     >
-      {
-        isOpen || isPaired
-          ? <img src={image} alt="Card" className={`w-full h-full object-cover rounded-xl blur-in`} />
-          : <FontAwesomeIcon icon={solid('shapes')} className='blur-in text-secondary text-3xl sm:text-6xl' />
-      }
+      <img src={image} alt="Card" className={`w-full h-full object-cover rounded-xl ${isOpen || isPaired ? 'blur-in' : 'hidden'} `} loading='eager' />
+      <FontAwesomeIcon icon={solid('shapes')} className={`blur-in text-secondary text-3xl sm:text-6xl ${isOpen || isPaired ? 'hidden' : 'blur-in'}`} />
     </button>
   );
 };

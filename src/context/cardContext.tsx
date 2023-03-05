@@ -10,23 +10,24 @@ type CardContextType = {
   getNewCards: () => void;
   flipCard: (id: number) => void;
   matchingPairsCount: number;
-  loadingImages: boolean;
+  creatingNewCards: boolean;
+  setMatchingPairsCount: (value: number | ((val: number) => number)) => void
 };
 
 const CardContext = createContext({});
 
 export const CardContextProvider = ({ children }: PropsWithChildren) => {
-  const { cards, setCards, getNewImages, loading } = useCards();
+  const { cards, setCards, createNewCards, isFetching } = useCards();
   const [firstCardIndex, setFirstCardIndex] = useStorage<number | null>(STORAGE_KEYS.FIRST_CARD_INDEX, null);
   const [boardDisabled, setBoardDisabled] = useState(false);
   const [matchingPairsCount, setMatchingPairsCount] = useStorage(STORAGE_KEYS.MATCHING_PAIRS_COUNT, 0);
   usePreventReload(boardDisabled);
 
-  const getNewCards = useCallback(() => {
-    getNewImages();
+  const getNewCards = useCallback(async () => {
+    await createNewCards();
     setFirstCardIndex(null);
     setMatchingPairsCount(0);
-  }, [getNewImages, setMatchingPairsCount, setFirstCardIndex]);
+  }, [createNewCards, setMatchingPairsCount, setFirstCardIndex]);
 
   const matchCards = useCallback((firstCard: CardType, secondCard: CardType, clonedCards: CardType[]) => {
     // Matching
@@ -78,8 +79,9 @@ export const CardContextProvider = ({ children }: PropsWithChildren) => {
     getNewCards,
     flipCard,
     matchingPairsCount,
-    loadingImages: loading
-  }), [cards, getNewCards, flipCard, matchingPairsCount, loading])
+    creatingNewCards: isFetching,
+    setMatchingPairsCount
+  }), [cards, getNewCards, flipCard, matchingPairsCount, isFetching, setMatchingPairsCount])
 
   return <CardContext.Provider value={context}>
     {children}
