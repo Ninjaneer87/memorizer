@@ -12,7 +12,7 @@ type PlayerContextType = {
 const PlayerContext = createContext({});
 
 export const PlayerContextProvider = ({ children }: PropsWithChildren) => {
-  const [player, setPlayer, loaded] = useStorage(STORAGE_KEYS.PLAYER, '');
+  const [player, setPlayer, , loaded] = useStorage(STORAGE_KEYS.PLAYER, '');
 
   const context: PlayerContextType = useMemo(() => ({
     player,

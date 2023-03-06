@@ -1,23 +1,28 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export function useStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const [storedValue, setStoredValue] = useState(initialValue);
   const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const item = localStorage.getItem(key);
-    setStoredValue(item ? JSON.parse(item) : initialValue);
-    setLoaded(true);
+  
+  const getValue = useCallback(() => {
+    const storageValue = localStorage.getItem(key);
+    const value: T = storageValue ? JSON.parse(storageValue) : initialValue;
+    return value;
   }, [key, initialValue]);
 
-  const setValue = useCallback((value: T | ((val: T) => T)) => {
-    const storageValue = localStorage.getItem(key);
-    const storedValue: T = storageValue ? JSON.parse(storageValue) : initialValue;
-    const newValue = value instanceof Function ? value(storedValue) : value;
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
+    const prevValue = getValue();
+    const newValue = value instanceof Function ? value(prevValue) : value;
     
     setStoredValue(newValue);
     localStorage.setItem(key, JSON.stringify(newValue));
-  }, [key, initialValue]);
+  }, [key, getValue]);
+
+  useEffect(() => {
+    const value = getValue();
+    setStoredValue(value);
+    setLoaded(true);
+  }, [getValue]);
   
-  return [storedValue, setValue, loaded] as const;
+  return [storedValue, setValue, getValue, loaded] as const;
 }

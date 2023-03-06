@@ -8,7 +8,7 @@ import Card from "components/Card";
 
 const GameBoard = () => {
   const { cards, flipCard, creatingNewCards } = useCardContext();
-  const { isGameOver, time, newGame } = useGameContext();
+  const { isGameOver, newGame, getTime } = useGameContext();
   const navigate = useNavigate();
 
   const handleScoreBoards = () => navigate('scores');
@@ -31,7 +31,7 @@ const GameBoard = () => {
             <div className="flex flex-col items-center p-4 gap-4 text-xl sm:text-4xl">
               <FontAwesomeIcon icon={solid('trophy')} className='text-primary' />
               <div className="flex flex-wrap justify-center gap-2">
-                You won in <span className="text-primary">{formatTime(time)}</span>
+                You won in <span className="text-primary">{formatTime(getTime())}</span>
               </div>
               <div className="flex gap-2">
                 <button onClick={newGame} className="text-secondary text-base">
@@ -57,8 +57,7 @@ const GameBoard = () => {
           index={i}
           animationDelay={isGameOver ? 0 : i * 100}
         />
-      ))
-      }
+      ))}
     </div>
   );
 };

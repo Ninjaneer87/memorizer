@@ -1,19 +1,22 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, PropsWithChildren, useMemo, useContext, createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 import { useStorage } from "hooks/useStorage";
 
 const intervalValue = 1000;
 
-export function useStopwatch() {
-  const [time, setTime] = useStorage(STORAGE_KEYS.TIME, 0);
+type TimeContextType = {
+  time: number;
+  startTime: () => void;
+  pauseTime: () => void;
+  stopTime: () => void;
+  getTime: () => number;
+}
+const TimeContext = createContext({});
+
+export const TimeContextProvider = ({ children }: PropsWithChildren) => {
+  const [time, setTime, getTime] = useStorage(STORAGE_KEYS.TIME, 0);
   const [isPaused, setIsPaused] = useStorage(STORAGE_KEYS.IS_PAUSED, true);
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
-
-  const getTimeSnapshot = useCallback(() => {
-    const storageTime = localStorage.getItem(STORAGE_KEYS.TIME);
-    const time = storageTime ? +storageTime : 0;
-    return time;
-  }, []);
 
   const startTime = useCallback(() => {
     setIsPaused(false);
@@ -38,12 +41,17 @@ export function useStopwatch() {
     return () => clearInterval(intervalRef.current);
   }, [isPaused, setTime]);
 
-  return {
-    isPaused,
+  const context: TimeContextType = useMemo(() => ({
     time,
     startTime,
     pauseTime,
     stopTime,
-    getTimeSnapshot,
-  };
+    getTime,
+  }), [time, startTime, pauseTime, stopTime, getTime]) ;
+
+  return <TimeContext.Provider value={context}>
+    {children}
+  </TimeContext.Provider>
 }
+
+export const useTimeContext = () => useContext(TimeContext) as TimeContextType;

@@ -15,7 +15,7 @@ export type CardType = {
 const initialCards = [] as CardType[];
 
 export function useCards() {
-  const [cards, setCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
+  const [cards, setCards, getCards] = useStorage(STORAGE_KEYS.CARDS, initialCards);
   const [isFetching, setIsFetching] = useState(false);
   const abortControllerRef = useRef(new AbortController());
 
@@ -44,6 +44,7 @@ export function useCards() {
   return {
     cards,
     setCards,
+    getCards,
     isFetching,
     createNewCards,
   };

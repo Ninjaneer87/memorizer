@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'styles/index.scss';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from 'App';
+import reportWebVitals from 'reportWebVitals';
 import { PlayerContextProvider } from 'context/playerContext';
 import { GameContextProvider } from 'context/gameContext';
 import { CardContextProvider } from 'context/cardContext';
 import { ScoreContextProvider } from 'context/scoreContext';
+import { TimeContextProvider } from 'context/timeContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,9 +17,11 @@ root.render(
     <CardContextProvider>
       <PlayerContextProvider>
         <ScoreContextProvider>
-          <GameContextProvider>
-            <App />
-          </GameContextProvider>
+          <TimeContextProvider>
+            <GameContextProvider>
+              <App />
+            </GameContextProvider>
+          </TimeContextProvider>
         </ScoreContextProvider>
       </PlayerContextProvider>
     </CardContextProvider>

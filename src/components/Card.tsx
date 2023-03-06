@@ -26,8 +26,16 @@ const Card = ({ image, notMatching, animationDelay, isOpen, handleFlip, isPaired
       `}
       onClick={flip}
     >
-      <img src={image} alt="Card" className={`w-full h-full object-cover rounded-xl ${isOpen || isPaired ? 'blur-in' : 'hidden'} `} loading='eager' />
-      <FontAwesomeIcon icon={solid('shapes')} className={`blur-in text-secondary text-3xl sm:text-6xl ${isOpen || isPaired ? 'hidden' : 'blur-in'}`} />
+      <img 
+        src={image} 
+        alt="Card" 
+        className={`w-full h-full object-cover rounded-xl ${isOpen || isPaired ? 'blur-in' : 'hidden'} `} 
+        loading='eager' 
+      />
+      <FontAwesomeIcon 
+        icon={solid('shapes')} 
+        className={`blur-in text-secondary text-3xl sm:text-6xl ${isOpen || isPaired ? 'hidden' : 'blur-in'}`} 
+      />
     </button>
   );
 };

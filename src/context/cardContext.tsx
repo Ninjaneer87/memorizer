@@ -1,7 +1,7 @@
 import { CardType, useCards } from "hooks/useCards";
 import { usePreventReload } from "hooks/usePreventReload";
 import { useStorage } from "hooks/useStorage";
-import { useContext, useState, useCallback, useMemo, PropsWithChildren } from "react";
+import { useContext, useCallback, useMemo, PropsWithChildren, useEffect } from "react";
 import { createContext } from "react";
 import { STORAGE_KEYS } from "utils/constants";
 
@@ -17,11 +17,15 @@ type CardContextType = {
 const CardContext = createContext({});
 
 export const CardContextProvider = ({ children }: PropsWithChildren) => {
-  const { cards, setCards, createNewCards, isFetching } = useCards();
-  const [firstCardIndex, setFirstCardIndex] = useStorage<number | null>(STORAGE_KEYS.FIRST_CARD_INDEX, null);
-  const [boardDisabled, setBoardDisabled] = useState(false);
+  const { cards, setCards, getCards, createNewCards, isFetching } = useCards();
+  const [, setFirstCardIndex, getFirstCardIndex] = useStorage<number | null>(STORAGE_KEYS.FIRST_CARD_INDEX, null);
+  const [boardDisabled, setBoardDisabled, getBoardDisabled] = useStorage(STORAGE_KEYS.BOARD_DISABLED, false);
   const [matchingPairsCount, setMatchingPairsCount] = useStorage(STORAGE_KEYS.MATCHING_PAIRS_COUNT, 0);
   usePreventReload(boardDisabled);
+
+  useEffect(() => {
+    setBoardDisabled(false);
+  }, [setBoardDisabled])
 
   const getNewCards = useCallback(async () => {
     await createNewCards();
@@ -51,18 +55,19 @@ export const CardContextProvider = ({ children }: PropsWithChildren) => {
       firstCard.isOpen = false;
       secondCard.isOpen = false;
       setFirstCardIndex(null);
-      setCards(clonedCards);
+      setCards([...clonedCards]);
       setBoardDisabled(false);
     }, 1000);
-  }, [setCards, setMatchingPairsCount, setFirstCardIndex]);
+  }, [setCards, setMatchingPairsCount, setFirstCardIndex, setBoardDisabled]);
 
   const flipCard = useCallback((selectedCardIndex: number) => {
-    if (boardDisabled) return;
+    if (getBoardDisabled()) return;
 
-    const clonedCards = cards.map(c => ({ ...c }));
+    const clonedCards = getCards();
     const selectedCard = clonedCards[selectedCardIndex];
     selectedCard.isOpen = true;
 
+    const firstCardIndex = getFirstCardIndex();
     if (firstCardIndex === null) {
       setFirstCardIndex(selectedCardIndex);
       setCards(clonedCards);
@@ -72,7 +77,7 @@ export const CardContextProvider = ({ children }: PropsWithChildren) => {
     const firstCard = clonedCards[firstCardIndex];
     setBoardDisabled(true);
     matchCards(firstCard, selectedCard, clonedCards);
-  }, [boardDisabled, matchCards, cards, firstCardIndex, setCards, setFirstCardIndex]);
+  }, [ getCards, setCards, getFirstCardIndex, setFirstCardIndex, getBoardDisabled, setBoardDisabled, matchCards]);
 
   const context: CardContextType = useMemo(() => ({
     cards,
